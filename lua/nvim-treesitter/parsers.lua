@@ -1218,8 +1218,6 @@ list.nickel = {
     url = "https://github.com/nickel-lang/tree-sitter-nickel",
     files = { "src/parser.c", "src/scanner.cc" },
     branch = "main",
-    generate_requires_npm = false,
-    requires_generate_from_grammar = false,
   },
 }
 
