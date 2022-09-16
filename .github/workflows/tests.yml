@@ -3,15 +3,17 @@ name: Tests
 on:
   push:
     branches:
-      - 'master'
+      - "master"
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches:
-      - 'master'
+      - "master"
 
 # Cancel any in-progress CI runs for a PR if it is updated
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
+  group:
+    ${{ github.workflow }}-${{ github.event_name == 'pull_request' &&
+    github.head_ref || github.sha }}
   cancel-in-progress: true
 
 jobs:
@@ -20,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        cc: [ gcc ]
+        cc: [gcc]
 
     name: Run tests
     runs-on: ${{ matrix.os }}
@@ -52,12 +54,18 @@ jobs:
           path: |
             ./parser/
             ~/AppData/Local/nvim/pack/nvim-treesitter/start/nvim-treesitter/parser/
-          key: ${{ matrix.os }}-${{ matrix.cc }}-parsers-v1-${{ hashFiles('./lockfile.json', './lua/nvim-treesitter/parsers.lua', './lua/nvim-treesitter/install.lua', './lua/nvim-treesitter/shell_selectors.lua') }}
+          key:
+            ${{ matrix.os }}-${{ matrix.cc }}-parsers-v1-${{
+            hashFiles('./lockfile.json', './lua/nvim-treesitter/parsers.lua',
+            './lua/nvim-treesitter/install.lua',
+            './lua/nvim-treesitter/shell_selectors.lua') }}
 
       - name: Compile parsers Unix like
-        if: ${{ matrix.os != 'windows-latest' && steps.parsers-cache.outputs.cache-hit != 'true' }}
+        if:
+          ${{ matrix.os != 'windows-latest' &&
+          steps.parsers-cache.outputs.cache-hit != 'true' }}
         run: |
-          nvim --headless -c "TSInstallSync all" -c "q"
+          nvim --headless -c "TSInstallSync nickel" -c "q"
 
       - name: Tests
         run: PATH=/usr/local/bin:$PATH ./scripts/run_tests.sh
